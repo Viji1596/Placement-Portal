@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded mb-4 shadow-sm">
+    <h1 class="display-4">Welcome to Placement Portal</h1>
+    <p class="lead">A comprehensive platform for managing campus recruitment activities</p>
+    <hr class="my-4">
+    <p>Connect companies, students, and placement drives efficiently.</p>
+    {% if not session.user_id %}
+        <a class="btn btn-primary btn-lg me-2" href="{{ url_for('login') }}" role="button">Login</a>
+        <!-- Bright, highlighted student registration button -->
+        <a class="btn btn-warning btn-lg fw-bold shadow-sm" href="{{ url_for('register_student') }}" role="button">
+            Register as Student
+        </a>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">For Students</h5>
+                <p class="card-text">Browse approved placement drives, apply for positions, and track your application status.</p>
+                {% if not session.user_id %}
+                    <a href="{{ url_for('register_student') }}" class="btn btn-warning fw-bold shadow-sm">Register Now</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">For Companies</h5>
+                <p class="card-text">Create placement drives, review applications, and manage recruitment process.</p>
+                {% if not session.user_id %}
+                    <a href="{{ url_for('register_company') }}" class="btn btn-primary">Register Now</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">For Admin</h5>
+                <p class="card-text">Manage companies, students, and placement drives. Approve registrations and drives.</p>
+                {% if not session.user_id %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-dark">Login as Admin</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews / Testimonials section -->
+<div class="mt-5">
+    <h3 class="text-center mb-4">What People Are Saying</h3>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">"This portal made it so easy to find and apply for campus placements. The process felt organized and transparent."</p>
+                    <h6 class="mb-0">- Akash, Final Year Student</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">"We were able to manage multiple drives and applications smoothly. Great tool for campus hiring."</p>
+                    <h6 class="mb-0">- Priya, HR Manager</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">"As an admin, I can monitor companies, students, and drives in one place. Saves a lot of time."</p>
+                    <h6 class="mb-0">- Rahul, Placement Officer</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

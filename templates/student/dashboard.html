@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Welcome, {{ student.student_name }}</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Student ID</h5>
+                <p class="card-text">{{ student.student_id }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Course</h5>
+                <p class="card-text">{{ student.course or 'Not specified' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">CGPA</h5>
+                <p class="card-text">{{ student.cgpa or 'Not specified' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if notifications %}
+<div class="mb-4">
+    <h4 class="mb-3 text-warning">Notifications</h4>
+    {% for notif in notifications %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ notif.message }}
+        <form method="POST" action="{{ url_for('dismiss_notification', notification_id=notif.id) }}" style="display:inline;">
+            <button type="submit" class="btn-close" aria-label="Close"></button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<h4 class="mb-3">Available Placement Drives</h4>
+<div class="card mb-4">
+    <div class="card-body">
+        {% if approved_drives %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Deadline</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in approved_drives %}
+                <tr>
+                    <td>{{ drive.company_name }}</td>
+                    <td>{{ drive.job_title }}</td>
+                    <td>{{ drive.application_deadline }}</td>
+                    <td>{{ drive.location or 'Not specified' }}</td>
+                    <td>
+                        {% if drive.has_applied %}
+                            <span class="badge bg-info">{{ drive.application_status|title }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Not Applied</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not drive.has_applied %}
+                            <form method="POST" action="{{ url_for('apply_drive', drive_id=drive.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted">Already Applied</span>
+                        {% endif %}
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#driveModal{{ drive.id }}">View Details</button>
+                    </td>
+                </tr>
+                
+                <!-- Modal for drive details -->
+                <div class="modal fade" id="driveModal{{ drive.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ drive.job_title }} - {{ drive.company_name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Job Description:</strong></p>
+                                <p>{{ drive.job_description }}</p>
+                                <p><strong>Eligibility Criteria:</strong></p>
+                                <p>{{ drive.eligibility_criteria | format_requirements }}</p>
+                                <p><strong>Location:</strong> {{ drive.location or 'Not specified' }}</p>
+                                <p><strong>Salary Range:</strong> {{ drive.salary_range or 'Not specified' }}</p>
+                                <p><strong>Application Deadline:</strong> {{ drive.application_deadline }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">No placement drives available at the moment.</p>
+        {% endif %}
+    </div>
+</div>
+
+<h4 class="mb-3">My Applications</h4>
+<div class="card">
+    <div class="card-body">
+        {% if my_applications %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Application Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in my_applications %}
+                <tr>
+                    <td>{{ app.company_name }}</td>
+                    <td>{{ app.job_title }}</td>
+                    <td>{{ app.application_date }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'primary' if app.status == 'applied' else 'info' if app.status == 'shortlisted' else 'success' if app.status == 'selected' else 'danger' }}">
+                            {{ app.status|title }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">You haven't applied to any placement drives yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

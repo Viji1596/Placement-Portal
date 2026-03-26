@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}View Applications - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Applications for {{ drive.job_title }}</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>Drive ID:</strong> {{ drive.id }}</p>
+        <p><strong>Application Deadline:</strong> {{ drive.application_deadline }}</p>
+        <p><strong>Total Applications:</strong> {{ applications|length }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if applications %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Course</th>
+                    <th>Year</th>
+                    <th>CGPA</th>
+                    <th>Application Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.id }}</td>
+                    <td>{{ application.student_name }}</td>
+                    <td>{{ application.student_id }}</td>
+                    <td>{{ application.email }}</td>
+                    <td>{{ application.contact_number }}</td>
+                    <td>{{ application.course or '-' }}</td>
+                    <td>{{ application.year or '-' }}</td>
+                    <td>{{ application.cgpa or '-' }}</td>
+                    <td>{{ application.application_date }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'primary' if application.status == 'applied' else 'info' if application.status == 'shortlisted' else 'success' if application.status == 'selected' else 'danger' }}">
+                            {{ application.status|title }}
+                        </span>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('update_application_status', application_id=application.id) }}" class="d-inline">
+                            <select name="status" class="form-select form-select-sm d-inline-block" style="width: auto;">
+                                <option value="applied" {{ 'selected' if application.status == 'applied' }}>Applied</option>
+                                <option value="shortlisted" {{ 'selected' if application.status == 'shortlisted' }}>Shortlisted</option>
+                                <option value="selected" {{ 'selected' if application.status == 'selected' }}>Selected</option>
+                                <option value="rejected" {{ 'selected' if application.status == 'rejected' }}>Rejected</option>
+                            </select>
+                            <input type="text" name="remarks" class="form-control form-control-sm d-inline-block mt-1" placeholder="Remarks" value="{{ application.remarks or '' }}" style="width: 150px;">
+                            <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
+                        </form>
+                        <a href="{{ url_for('company_view_student_profile', student_id=application.student_id) }}" class="btn btn-sm btn-info mt-1">View Profile</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">No applications received yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('company_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}
+
+

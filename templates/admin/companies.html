@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Companies - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Manage Companies</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin_companies') }}">
+            <div class="row">
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="search" placeholder="Search by company name..." value="{{ search }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company Name</th>
+                    <th>HR Contact</th>
+                    <th>Email</th>
+                    <th>Website</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in companies %}
+                <tr>
+                    <td>{{ company.id }}</td>
+                    <td>{{ company.company_name }}</td>
+                    <td>{{ company.hr_contact }}</td>
+                    <td>{{ company.email }}</td>
+                    <td><a href="{{ company.website }}" target="_blank">{{ company.website }}</a></td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if company.approval_status == 'approved' else 'warning' if company.approval_status == 'pending' else 'danger' }}">
+                            {{ company.approval_status|title }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if company.approval_status == 'pending' %}
+                            <form method="POST" action="{{ url_for('approve_company', company_id=company.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_company', company_id=company.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                            </form>
+                        {% endif %}
+                        {% if company.approval_status == 'approved' %}
+                            <form method="POST" action="{{ url_for('blacklist_company', company_id=company.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to blacklist this company?')">Blacklist</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

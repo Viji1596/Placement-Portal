@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Placement Drive - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Edit Placement Drive</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('edit_drive', drive_id=drive.id) }}">
+            <div class="mb-3">
+                <label for="job_title" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="job_title" name="job_title" value="{{ drive.job_title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="job_description" class="form-label">Job Description</label>
+                <textarea class="form-control" id="job_description" name="job_description" rows="5" required>{{ drive.job_description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="requirement_type" class="form-label">Requirement Type</label>
+                <select class="form-select" id="requirement_type" name="requirement_type" required>
+                    <option value="" disabled {% if not parsed_reqs.get('requirement_type') %}selected{% endif %}>Select Requirement Type</option>
+                    <option value="10th" {% if parsed_reqs.get('requirement_type') == '10th' %}selected{% endif %}>10th</option>
+                    <option value="12th" {% if parsed_reqs.get('requirement_type') == '12th' %}selected{% endif %}>12th</option>
+                    <option value="UG" {% if parsed_reqs.get('requirement_type') == 'UG' %}selected{% endif %}>UG</option>
+                    <option value="PG" {% if parsed_reqs.get('requirement_type') == 'PG' %}selected{% endif %}>PG</option>
+                </select>
+            </div>
+            
+            <div class="mb-3" id="percentage_group" style="display: none;">
+                <label for="min_percentage" class="form-label">Min Percentage</label>
+                <input type="number" step="0.01" class="form-control" id="min_percentage" name="min_percentage" placeholder="e.g., 80" value="{{ parsed_reqs.get('min_percentage', '') }}">
+            </div>
+
+            <div class="mb-3" id="cgpa_group" style="display: none;">
+                <label for="min_cgpa" class="form-label">Min CGPA</label>
+                <input type="number" step="0.01" class="form-control" id="min_cgpa" name="min_cgpa" placeholder="e.g., 7.5" value="{{ parsed_reqs.get('min_cgpa', '') }}">
+            </div>
+
+            <div class="mb-3" id="degree_group" style="display: none;">
+                <label for="degree" class="form-label">Degree (Optional)</label>
+                <input type="text" class="form-control" id="degree" name="degree" placeholder="e.g., B.Tech" value="{{ parsed_reqs.get('degree', '') }}">
+            </div>
+            
+            {% if parsed_reqs.get('raw') %}
+            <div class="alert alert-warning mt-2">
+                <strong>Legacy Requirement Data:</strong> {{ parsed_reqs.get('raw') }}<br>
+                Please select new requirement settings to update.
+            </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="application_deadline" class="form-label">Application Deadline</label>
+                    <input type="date" class="form-control" id="application_deadline" name="application_deadline" value="{{ drive.application_deadline }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ drive.location or '' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="salary_range" class="form-label">Salary Range</label>
+                <input type="text" class="form-control" id="salary_range" name="salary_range" value="{{ drive.salary_range or '' }}" placeholder="e.g., 5-8 LPA">
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('company_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Drive</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const reqTypeSelect = document.getElementById("requirement_type");
+        const percentageGroup = document.getElementById("percentage_group");
+        const cgpaGroup = document.getElementById("cgpa_group");
+        const degreeGroup = document.getElementById("degree_group");
+
+        const minPercentage = document.getElementById("min_percentage");
+        const minCgpa = document.getElementById("min_cgpa");
+
+        function updateFields() {
+            const val = reqTypeSelect.value;
+            // hide all initially
+            percentageGroup.style.display = "none";
+            cgpaGroup.style.display = "none";
+            degreeGroup.style.display = "none";
+            minPercentage.required = false;
+            minCgpa.required = false;
+
+            if (val === "10th" || val === "12th") {
+                percentageGroup.style.display = "block";
+                minPercentage.required = true;
+            } else if (val === "UG" || val === "PG") {
+                cgpaGroup.style.display = "block";
+                degreeGroup.style.display = "block";
+                minCgpa.required = true;
+            }
+        }
+
+        reqTypeSelect.addEventListener("change", updateFields);
+        updateFields(); // run on load
+    });
+</script>
+{% endblock %}
+
+

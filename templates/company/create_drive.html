@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Create Placement Drive - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Create Placement Drive</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('create_drive') }}">
+            <div class="mb-3">
+                <label for="job_title" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="job_title" name="job_title" required>
+            </div>
+            <div class="mb-3">
+                <label for="job_description" class="form-label">Job Description</label>
+                <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="requirement_type" class="form-label">Requirement Type</label>
+                <select class="form-select" id="requirement_type" name="requirement_type" required>
+                    <option value="" selected disabled>Select Requirement Type</option>
+                    <option value="10th">10th</option>
+                    <option value="12th">12th</option>
+                    <option value="UG">UG</option>
+                    <option value="PG">PG</option>
+                </select>
+            </div>
+            
+            <div class="mb-3" id="percentage_group" style="display: none;">
+                <label for="min_percentage" class="form-label">Min Percentage</label>
+                <input type="number" step="0.01" class="form-control" id="min_percentage" name="min_percentage" placeholder="e.g., 80">
+            </div>
+
+            <div class="mb-3" id="cgpa_group" style="display: none;">
+                <label for="min_cgpa" class="form-label">Min CGPA</label>
+                <input type="number" step="0.01" class="form-control" id="min_cgpa" name="min_cgpa" placeholder="e.g., 7.5">
+            </div>
+
+            <div class="mb-3" id="degree_group" style="display: none;">
+                <label for="degree" class="form-label">Degree (Optional)</label>
+                <input type="text" class="form-control" id="degree" name="degree" placeholder="e.g., B.Tech">
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="application_deadline" class="form-label">Application Deadline</label>
+                    <input type="date" class="form-control" id="application_deadline" name="application_deadline" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="salary_range" class="form-label">Salary Range</label>
+                <input type="text" class="form-control" id="salary_range" name="salary_range" placeholder="e.g., 5-8 LPA">
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('company_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Drive</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const reqTypeSelect = document.getElementById("requirement_type");
+        const percentageGroup = document.getElementById("percentage_group");
+        const cgpaGroup = document.getElementById("cgpa_group");
+        const degreeGroup = document.getElementById("degree_group");
+
+        const minPercentage = document.getElementById("min_percentage");
+        const minCgpa = document.getElementById("min_cgpa");
+
+        function updateFields() {
+            const val = reqTypeSelect.value;
+            // hide all initially
+            percentageGroup.style.display = "none";
+            cgpaGroup.style.display = "none";
+            degreeGroup.style.display = "none";
+            minPercentage.required = false;
+            minCgpa.required = false;
+
+            if (val === "10th" || val === "12th") {
+                percentageGroup.style.display = "block";
+                minPercentage.required = true;
+            } else if (val === "UG" || val === "PG") {
+                cgpaGroup.style.display = "block";
+                degreeGroup.style.display = "block";
+                minCgpa.required = true;
+            }
+        }
+
+        reqTypeSelect.addEventListener("change", updateFields);
+        updateFields(); // run on load
+    });
+</script>
+{% endblock %}
+
+

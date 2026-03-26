@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}View Applications - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">All Applications</h2>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Student</th>
+                    <th>Student ID</th>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Application Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.id }}</td>
+                    <td>{{ application.student_name }}</td>
+                    <td>{{ application.student_id }}</td>
+                    <td>{{ application.company_name }}</td>
+                    <td>{{ application.job_title }}</td>
+                    <td>{{ application.application_date }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'primary' if application.status == 'applied' else 'info' if application.status == 'shortlisted' else 'success' if application.status == 'selected' else 'danger' }}">
+                            {{ application.status|title }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+

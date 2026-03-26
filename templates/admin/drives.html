@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Placement Drives - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Manage Placement Drives</h2>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in drives %}
+                <tr>
+                    <td>{{ drive.id }}</td>
+                    <td>{{ drive.company_name }}</td>
+                    <td>{{ drive.job_title }}</td>
+                    <td>{{ drive.application_deadline }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if drive.status == 'approved' else 'warning' if drive.status == 'pending' else 'secondary' }}">
+                            {{ drive.status|title }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if drive.status == 'pending' %}
+                            <form method="POST" action="{{ url_for('approve_drive', drive_id=drive.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_drive', drive_id=drive.id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                            </form>
+                        {% endif %}
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#driveModal{{ drive.id }}">View Details</button>
+                    </td>
+                </tr>
+                
+                <!-- Modal for drive details -->
+                <div class="modal fade" id="driveModal{{ drive.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ drive.job_title }} - {{ drive.company_name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Job Description:</strong></p>
+                                <p>{{ drive.job_description }}</p>
+                                <p><strong>Eligibility Criteria:</strong></p>
+                                <p>{{ drive.eligibility_criteria | format_requirements }}</p>
+                                <p><strong>Location:</strong> {{ drive.location or 'Not specified' }}</p>
+                                <p><strong>Salary Range:</strong> {{ drive.salary_range or 'Not specified' }}</p>
+                                <p><strong>Application Deadline:</strong> {{ drive.application_deadline }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+

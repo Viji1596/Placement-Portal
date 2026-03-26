@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Students</h5>
+                <h2 class="card-text">{{ total_students }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Total Companies</h5>
+                <h2 class="card-text">{{ total_companies }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Total Applications</h5>
+                <h2 class="card-text">{{ total_applications }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Total Drives</h5>
+                <h2 class="card-text">{{ total_drives }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Pending Approvals</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Pending Companies:</strong> {{ pending_companies }}</p>
+                <p><strong>Pending Drives:</strong> {{ pending_drives }}</p>
+                <a href="{{ url_for('admin_companies') }}" class="btn btn-sm btn-primary">Manage Companies</a>
+                <a href="{{ url_for('admin_drives') }}" class="btn btn-sm btn-primary">Manage Drives</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Quick Actions</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('admin_companies') }}" class="btn btn-outline-primary w-100">Manage Companies</a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('admin_students') }}" class="btn btn-outline-primary w-100">Manage Students</a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('admin_drives') }}" class="btn btn-outline-primary w-100">Manage Drives</a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('admin_applications') }}" class="btn btn-outline-primary w-100">View Applications</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

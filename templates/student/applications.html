@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications - Placement Portal{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Applications</h2>
+
+<div class="card">
+    <div class="card-body">
+        {% if applications %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Application Date</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Drive Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.id }}</td>
+                    <td>{{ application.company_name }}</td>
+                    <td>{{ application.job_title }}</td>
+                    <td>{{ application.application_date }}</td>
+                    <td>{{ application.application_deadline }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'primary' if application.status == 'applied' else 'info' if application.status == 'shortlisted' else 'success' if application.status == 'selected' else 'danger' }}">
+                            {{ application.status|title }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if application.drive_status == 'approved' else 'secondary' }}">
+                            {{ application.drive_status|title }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">You haven't applied to any placement drives yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}
+
+
